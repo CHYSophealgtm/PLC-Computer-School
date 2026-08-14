@@ -1,0 +1,578 @@
+-- CreateSchema
+CREATE SCHEMA IF NOT EXISTS "public";
+
+-- CreateTable
+CREATE TABLE "User" (
+    "id" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "passwordHash" TEXT NOT NULL,
+    "fullName" TEXT NOT NULL,
+    "role" TEXT NOT NULL DEFAULT 'STAFF',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Teacher" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT,
+    "teacherId" TEXT NOT NULL,
+    "nameKh" TEXT NOT NULL,
+    "nameEn" TEXT,
+    "firstNameKh" TEXT,
+    "lastNameKh" TEXT,
+    "firstNameEn" TEXT,
+    "lastNameEn" TEXT,
+    "gender" TEXT NOT NULL,
+    "dob" TIMESTAMP(3),
+    "phoneNumber" TEXT NOT NULL,
+    "email" TEXT,
+    "address" TEXT,
+    "specialty" TEXT NOT NULL,
+    "baseSalary" DOUBLE PRECISION NOT NULL DEFAULT 0.00,
+    "hourlyRate" DOUBLE PRECISION NOT NULL DEFAULT 0.00,
+    "status" TEXT NOT NULL DEFAULT 'ACTIVE',
+    "joinDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "photoUrl" TEXT,
+    "idCardNumber" TEXT,
+    "nationalCardUrl" TEXT,
+    "degreeUrl" TEXT,
+    "cvUrl" TEXT,
+    "contractUrl" TEXT,
+    "telegramChatId" TEXT,
+    "shift" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Teacher_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Student" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT,
+    "studentId" TEXT NOT NULL,
+    "nameKh" TEXT NOT NULL,
+    "nameEn" TEXT,
+    "firstNameKh" TEXT,
+    "lastNameKh" TEXT,
+    "firstNameEn" TEXT,
+    "lastNameEn" TEXT,
+    "gender" TEXT NOT NULL,
+    "dob" TIMESTAMP(3),
+    "phoneNumber" TEXT,
+    "guardianName" TEXT,
+    "guardianPhone" TEXT,
+    "relationship" TEXT,
+    "address" TEXT,
+    "course" TEXT,
+    "level" TEXT,
+    "grade" TEXT,
+    "shift" TEXT,
+    "status" TEXT NOT NULL DEFAULT 'ACTIVE',
+    "registeredDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "photoUrl" TEXT,
+    "birthCertificateUrl" TEXT,
+    "idCardUrl" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Student_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Attendance" (
+    "id" TEXT NOT NULL,
+    "studentId" TEXT NOT NULL,
+    "date" TIMESTAMP(3) NOT NULL,
+    "status" TEXT NOT NULL,
+    "reason" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Attendance_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "TeacherAttendance" (
+    "id" TEXT NOT NULL,
+    "teacherId" TEXT NOT NULL,
+    "date" TIMESTAMP(3) NOT NULL,
+    "status" TEXT NOT NULL,
+    "reason" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "TeacherAttendance_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Invoice" (
+    "id" TEXT NOT NULL,
+    "invoiceNumber" TEXT NOT NULL,
+    "studentId" TEXT NOT NULL,
+    "term" TEXT NOT NULL,
+    "amountDue" DOUBLE PRECISION NOT NULL,
+    "amountPaid" DOUBLE PRECISION NOT NULL DEFAULT 0.00,
+    "status" TEXT NOT NULL DEFAULT 'PENDING',
+    "paymentDate" TIMESTAMP(3),
+    "paymentMethod" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Invoice_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "SalaryPayment" (
+    "id" TEXT NOT NULL,
+    "teacherId" TEXT NOT NULL,
+    "payPeriod" TEXT NOT NULL,
+    "baseSalary" DOUBLE PRECISION NOT NULL,
+    "bonus" DOUBLE PRECISION NOT NULL DEFAULT 0.00,
+    "deduction" DOUBLE PRECISION NOT NULL DEFAULT 0.00,
+    "totalPaid" DOUBLE PRECISION NOT NULL,
+    "status" TEXT NOT NULL DEFAULT 'PENDING',
+    "paymentDate" TIMESTAMP(3),
+    "invoiceNumber" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "SalaryPayment_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "CertificateTemplate" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "bgImageUrl" TEXT NOT NULL,
+    "contentXml" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "CertificateTemplate_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Certificate" (
+    "id" TEXT NOT NULL,
+    "certificateNumber" TEXT NOT NULL,
+    "studentId" TEXT NOT NULL,
+    "templateId" TEXT NOT NULL,
+    "issueDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "gradeTitle" TEXT NOT NULL,
+    "qrCodeUrl" TEXT,
+
+    CONSTRAINT "Certificate_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Asset" (
+    "id" TEXT NOT NULL,
+    "nameKh" TEXT NOT NULL,
+    "nameEn" TEXT,
+    "descriptionKh" TEXT,
+    "descriptionEn" TEXT,
+    "category" TEXT NOT NULL,
+    "quantity" INTEGER NOT NULL DEFAULT 1,
+    "unitPrice" DOUBLE PRECISION NOT NULL DEFAULT 0.00,
+    "location" TEXT,
+    "personInCharge" TEXT,
+    "status" TEXT NOT NULL DEFAULT 'ល្អឥតខ្ចោះ',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Asset_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Expense" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "amount" DOUBLE PRECISION NOT NULL,
+    "date" TEXT NOT NULL,
+    "category" TEXT NOT NULL,
+    "paymentMethod" TEXT,
+    "note" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Expense_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Score" (
+    "id" TEXT NOT NULL,
+    "studentId" TEXT NOT NULL,
+    "month" TEXT NOT NULL,
+    "subject" TEXT NOT NULL,
+    "score" DOUBLE PRECISION NOT NULL,
+    "rank" INTEGER,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Score_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Timetable" (
+    "id" TEXT NOT NULL,
+    "teacherId" TEXT NOT NULL,
+    "subject" TEXT NOT NULL,
+    "room" TEXT NOT NULL,
+    "dayOfWeek" TEXT NOT NULL,
+    "startTime" TEXT NOT NULL,
+    "endTime" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Timetable_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Course" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "description" TEXT,
+    "price" DOUBLE PRECISION NOT NULL DEFAULT 0.00,
+    "duration" TEXT,
+    "hours" TEXT,
+    "teacherId" TEXT,
+    "status" TEXT NOT NULL DEFAULT 'ACTIVE',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Course_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Enrollment" (
+    "id" TEXT NOT NULL,
+    "studentId" TEXT NOT NULL,
+    "courseId" TEXT NOT NULL,
+    "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "status" TEXT NOT NULL DEFAULT 'ENROLLED',
+
+    CONSTRAINT "Enrollment_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "LeaveRequest" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT,
+    "teacherId" TEXT,
+    "studentId" TEXT,
+    "applicantType" TEXT DEFAULT 'TEACHER',
+    "applicantName" TEXT,
+    "applicantCode" TEXT,
+    "type" TEXT NOT NULL,
+    "startDate" TIMESTAMP(3) NOT NULL,
+    "endDate" TIMESTAMP(3) NOT NULL,
+    "reason" TEXT,
+    "status" TEXT NOT NULL DEFAULT 'PENDING',
+    "guardianPhone" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "LeaveRequest_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Book" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "author" TEXT,
+    "isbn" TEXT,
+    "category" TEXT,
+    "totalCopies" INTEGER NOT NULL DEFAULT 1,
+    "availableCopies" INTEGER NOT NULL DEFAULT 1,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Book_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "BookBorrowing" (
+    "id" TEXT NOT NULL,
+    "bookId" TEXT NOT NULL,
+    "studentId" TEXT NOT NULL,
+    "borrowDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "dueDate" TIMESTAMP(3) NOT NULL,
+    "returnDate" TIMESTAMP(3),
+    "status" TEXT NOT NULL DEFAULT 'BORROWED',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "BookBorrowing_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Announcement" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "content" TEXT NOT NULL,
+    "target" TEXT NOT NULL,
+    "sentBy" TEXT NOT NULL,
+    "sentAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Announcement_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Exam" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "description" TEXT,
+    "courseId" TEXT,
+    "teacherId" TEXT NOT NULL,
+    "duration" INTEGER NOT NULL DEFAULT 60,
+    "status" TEXT NOT NULL DEFAULT 'DRAFT',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Exam_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Question" (
+    "id" TEXT NOT NULL,
+    "examId" TEXT NOT NULL,
+    "text" TEXT NOT NULL,
+    "options" TEXT NOT NULL,
+    "answer" TEXT NOT NULL,
+    "points" INTEGER NOT NULL DEFAULT 1,
+
+    CONSTRAINT "Question_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ExamResult" (
+    "id" TEXT NOT NULL,
+    "examId" TEXT NOT NULL,
+    "studentId" TEXT NOT NULL,
+    "score" INTEGER NOT NULL,
+    "totalPoints" INTEGER NOT NULL,
+    "answers" TEXT NOT NULL,
+    "submittedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "ExamResult_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "PaymentTransaction" (
+    "id" TEXT NOT NULL,
+    "invoiceId" TEXT NOT NULL,
+    "transactionId" TEXT NOT NULL,
+    "amount" DOUBLE PRECISION NOT NULL,
+    "currency" TEXT NOT NULL DEFAULT 'USD',
+    "paymentMethod" TEXT NOT NULL DEFAULT 'KHQR',
+    "status" TEXT NOT NULL DEFAULT 'SUCCESS',
+    "rawResponse" TEXT,
+    "paidAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "PaymentTransaction_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Document" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "fileUrl" TEXT NOT NULL,
+    "type" TEXT NOT NULL DEFAULT 'OTHER',
+    "studentId" TEXT,
+    "teacherId" TEXT,
+    "uploadedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Document_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Teacher_userId_key" ON "Teacher"("userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Teacher_teacherId_key" ON "Teacher"("teacherId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Student_userId_key" ON "Student"("userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Student_studentId_key" ON "Student"("studentId");
+
+-- CreateIndex
+CREATE INDEX "Attendance_studentId_idx" ON "Attendance"("studentId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Attendance_studentId_date_key" ON "Attendance"("studentId", "date");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "TeacherAttendance_teacherId_date_key" ON "TeacherAttendance"("teacherId", "date");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Invoice_invoiceNumber_key" ON "Invoice"("invoiceNumber");
+
+-- CreateIndex
+CREATE INDEX "Invoice_studentId_idx" ON "Invoice"("studentId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "SalaryPayment_invoiceNumber_key" ON "SalaryPayment"("invoiceNumber");
+
+-- CreateIndex
+CREATE INDEX "SalaryPayment_teacherId_idx" ON "SalaryPayment"("teacherId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Certificate_certificateNumber_key" ON "Certificate"("certificateNumber");
+
+-- CreateIndex
+CREATE INDEX "Certificate_studentId_idx" ON "Certificate"("studentId");
+
+-- CreateIndex
+CREATE INDEX "Certificate_templateId_idx" ON "Certificate"("templateId");
+
+-- CreateIndex
+CREATE INDEX "Score_studentId_idx" ON "Score"("studentId");
+
+-- CreateIndex
+CREATE INDEX "Timetable_teacherId_idx" ON "Timetable"("teacherId");
+
+-- CreateIndex
+CREATE INDEX "Course_teacherId_idx" ON "Course"("teacherId");
+
+-- CreateIndex
+CREATE INDEX "Enrollment_studentId_idx" ON "Enrollment"("studentId");
+
+-- CreateIndex
+CREATE INDEX "Enrollment_courseId_idx" ON "Enrollment"("courseId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Enrollment_studentId_courseId_key" ON "Enrollment"("studentId", "courseId");
+
+-- CreateIndex
+CREATE INDEX "LeaveRequest_userId_idx" ON "LeaveRequest"("userId");
+
+-- CreateIndex
+CREATE INDEX "LeaveRequest_teacherId_idx" ON "LeaveRequest"("teacherId");
+
+-- CreateIndex
+CREATE INDEX "LeaveRequest_studentId_idx" ON "LeaveRequest"("studentId");
+
+-- CreateIndex
+CREATE INDEX "BookBorrowing_bookId_idx" ON "BookBorrowing"("bookId");
+
+-- CreateIndex
+CREATE INDEX "BookBorrowing_studentId_idx" ON "BookBorrowing"("studentId");
+
+-- CreateIndex
+CREATE INDEX "Announcement_sentBy_idx" ON "Announcement"("sentBy");
+
+-- CreateIndex
+CREATE INDEX "Exam_courseId_idx" ON "Exam"("courseId");
+
+-- CreateIndex
+CREATE INDEX "Exam_teacherId_idx" ON "Exam"("teacherId");
+
+-- CreateIndex
+CREATE INDEX "Question_examId_idx" ON "Question"("examId");
+
+-- CreateIndex
+CREATE INDEX "ExamResult_examId_idx" ON "ExamResult"("examId");
+
+-- CreateIndex
+CREATE INDEX "ExamResult_studentId_idx" ON "ExamResult"("studentId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "PaymentTransaction_transactionId_key" ON "PaymentTransaction"("transactionId");
+
+-- CreateIndex
+CREATE INDEX "PaymentTransaction_invoiceId_idx" ON "PaymentTransaction"("invoiceId");
+
+-- CreateIndex
+CREATE INDEX "Document_studentId_idx" ON "Document"("studentId");
+
+-- CreateIndex
+CREATE INDEX "Document_teacherId_idx" ON "Document"("teacherId");
+
+-- AddForeignKey
+ALTER TABLE "Teacher" ADD CONSTRAINT "Teacher_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Student" ADD CONSTRAINT "Student_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Attendance" ADD CONSTRAINT "Attendance_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Student"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TeacherAttendance" ADD CONSTRAINT "TeacherAttendance_teacherId_fkey" FOREIGN KEY ("teacherId") REFERENCES "Teacher"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Invoice" ADD CONSTRAINT "Invoice_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Student"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "SalaryPayment" ADD CONSTRAINT "SalaryPayment_teacherId_fkey" FOREIGN KEY ("teacherId") REFERENCES "Teacher"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Certificate" ADD CONSTRAINT "Certificate_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Student"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Certificate" ADD CONSTRAINT "Certificate_templateId_fkey" FOREIGN KEY ("templateId") REFERENCES "CertificateTemplate"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Score" ADD CONSTRAINT "Score_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Student"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Timetable" ADD CONSTRAINT "Timetable_teacherId_fkey" FOREIGN KEY ("teacherId") REFERENCES "Teacher"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Course" ADD CONSTRAINT "Course_teacherId_fkey" FOREIGN KEY ("teacherId") REFERENCES "Teacher"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Enrollment" ADD CONSTRAINT "Enrollment_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Course"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Enrollment" ADD CONSTRAINT "Enrollment_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Student"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "LeaveRequest" ADD CONSTRAINT "LeaveRequest_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Student"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "LeaveRequest" ADD CONSTRAINT "LeaveRequest_teacherId_fkey" FOREIGN KEY ("teacherId") REFERENCES "Teacher"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "LeaveRequest" ADD CONSTRAINT "LeaveRequest_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BookBorrowing" ADD CONSTRAINT "BookBorrowing_bookId_fkey" FOREIGN KEY ("bookId") REFERENCES "Book"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BookBorrowing" ADD CONSTRAINT "BookBorrowing_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Student"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Announcement" ADD CONSTRAINT "Announcement_sentBy_fkey" FOREIGN KEY ("sentBy") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Exam" ADD CONSTRAINT "Exam_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Course"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Exam" ADD CONSTRAINT "Exam_teacherId_fkey" FOREIGN KEY ("teacherId") REFERENCES "Teacher"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Question" ADD CONSTRAINT "Question_examId_fkey" FOREIGN KEY ("examId") REFERENCES "Exam"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ExamResult" ADD CONSTRAINT "ExamResult_examId_fkey" FOREIGN KEY ("examId") REFERENCES "Exam"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ExamResult" ADD CONSTRAINT "ExamResult_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Student"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "PaymentTransaction" ADD CONSTRAINT "PaymentTransaction_invoiceId_fkey" FOREIGN KEY ("invoiceId") REFERENCES "Invoice"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Document" ADD CONSTRAINT "Document_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Student"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Document" ADD CONSTRAINT "Document_teacherId_fkey" FOREIGN KEY ("teacherId") REFERENCES "Teacher"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
